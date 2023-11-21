@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  bot:
+    build: 
+      context: ../src/
+      dockerfile: Dockerfile
+    command: python3 main.py
+    env_file:
+      - ../.env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - POSTGRE_HOST=postgres
+      - REDIS_HOST=redis
+
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    env_file:
+      - "../.env"
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    command: redis-server
+    volumes:
+      - "redis:/var/lib/redis"
+      - "redis-config:/usr/local/etc/redis/redis.conf"
+    ports:
+      - "6379:6379"
+
+volumes:
+  redis:
+  redis-config:
+  postgres-data:
